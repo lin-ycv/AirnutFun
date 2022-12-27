@@ -1,32 +1,34 @@
-# 空气果 Fun Home Assistant 插件
+# 空气果 AirNut Fun Home Assistant Integration
 
-## 接入方式
+## Setup
 
-1. 在路由器自定义域名（DNS劫持，或其他名字）中设置***apn2.airnut.com***指向自己的Home Assistant内网地址，比如我的是***10.0.0.10***，具体方法建议自行搜索。
-2. 用[Easylink app](easylink_v3.2.apk)连接好WiFi后(空气果亮绿灯即连接成功)，双击退出WiFi连接模式。
-3. 通过hacs安装，或者复制文件到custom_components
-4. 进行如下配置
+1. DNS override to point ***apn2.airnut.com*** to your Home Assistant local IP，ie: ***10.0.0.10***
+2. Use [Easylink app](easylink_v3.2.apk) to configure AirNut to connect to your wifi, double click button after setup in app
+3. Add `custom_components\airnut` to `\config` folder on HA (samba/ssh/file editor)
+4. Configure as below
 ###
-1. 夜间是否更新   is_night_update: False  这功能已经实现，可正常使用
-2. 默认情况如下，is_night_update=true  24小时更新，is_night_update=false，夜间停止更新，其余时间照常更新，想一直关闭更新把夜间开始时间改成 00:00:00
-3. 检测时间 由 SCAN_INTERVAL = datetime.timedelta(seconds=120)  控制,需要间隔多久自己修改,默认2分钟
-4. 想一直亮屏可以修改为1分钟或者更低(触发一次更新pm2.5，会持续亮屏1-2分钟)
+1. whether to update during the night or not `is_night_update: False`
+2. `is_night_update=true` means 24 hours loging, `is_night_update=false` pauses during the night; set `night_start_hour` to `00:00:00` to disable loging
+3. `SCAN_INTERVAL` configures how often loging is done, `= datetime.timedelta(seconds=600)`  is equivalent to 10 min (default)
+4. to keep screen constantly on, interval can be set to 1 min (loging pm2.5 takes 1~2 mins)
 
-```
-# 这个是必须有的
+configuration.yaml
+```yaml
+# Required
 airnut:
-  #开启定时更新数据 true=24小时更新,false=夜间停止更新，其余时间照常更新，一直关闭更新把夜间开始时间改成 00:00:00
   is_night_update: False
-  #夜间开始时间
+  # choose ONE
   night_start_hour: 0001-01-01 23:00:00
-  #这里有两个选择，上面的是夜间停止更新，下面的是关闭所有时段自动检测功能
   night_start_hour: 0001-01-01 0:00:00
-  #夜间结束时间
   night_end_hour: 0001-01-01 06:00:00
- #天气城市代码
-  weathe_code: 101280800
-  
-# ip为空气果内网的ip地址，空气果1s共四项数据，分别写四个类型的传感器
+  # City code (Taipei)
+  weathe_code: 101340101
+
+homeassistant:
+  unit_system: metric
+  customize: !include customize.yaml
+
+# local ip of airnut fun, each device have 4 sensors
 sensor:
   - platform: airnut
     ip: "10.0.0.105"
@@ -44,7 +46,7 @@ sensor:
     ip: "10.0.0.105"
     type: weathe
 
-# 如果有第二个空气果，可以在下面继续，以此类推
+# if you're using more than one device, add accordingly
   - platform: airnut
     ip: "10.0.0.xxx"
     type: temperature
@@ -60,32 +62,32 @@ sensor:
   - platform: airnut
     ip: "10.0.0.xxx"
     type: weathe
+```
 
-
-
-# 定义图标和名称
-# 在customize.yaml文件插入下面几项
+customize.yaml
+```yaml
+# Set icon and name
 sensor.airnut_fun_pm25:
   icon: mdi:blur
-  friendly_name: 空气质量
+  friendly_name: PM2.5
 sensor.airnut_fun_battery:
   icon: mdi:battery
-  friendly_name: 电量
+  friendly_name: Battery
 sensor.airnut_fun_temperature:
   icon: mdi:thermometer
-  friendly_name: 温度
+  friendly_name: Temperature
 sensor.airnut_fun_humidity:
   icon: mdi:water-percent
-  friendly_name: 湿度
+  friendly_name: Humidity
 sensor.airnut_fun_weathe:
   icon: mdi:weather-windy
-  friendly_name: 天气
+  friendly_name: Weather
   
 ```
-## 里面的城市天气代码需要改成你所在的城市代码
-## 代码请到这里寻找
+## Change city code to match yours
+## code can be found here (in the url once you select a city)
 https://www.qweather.com/
-## 天气每隔10分钟更新一次，可谓聊胜于无
+## updates every `SCAN_INTERVAL` seconds (default: 10min)
 
 # 如果遇到时间不准确，或者是utc时间，请看下面
 ## 找到项目里面的_init_.py文件，找到下面
@@ -96,10 +98,5 @@ https://www.qweather.com/
 ## 或者
 ##  return int((datetime.datetime.utcnow() + datetime.timedelta(hours=8)).timestamp())
 ## 请自行测试那一条适用，导致这个原因是docker环境或者主机环境时区问题影响,每个设备不能同时照顾
-
-# 其他
-### 我也是修改的，没有利益关系，如有其它冲突，请告诉
-
-### 最后谢谢之前写airnut 1s的大佬，[原贴地址](https://github.com/billhu1996/Airnut/)
 
 
