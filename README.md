@@ -85,18 +85,18 @@ sensor.airnut_fun_weathe:
   
 ```
 ## Change city code to match yours
-## code can be found here (in the url once you select a city)
+code can be found here (in the url once you select a city)
 https://www.qweather.com/
-## updates every `SCAN_INTERVAL` seconds (default: 10min)
 
-# 如果遇到时间不准确，或者是utc时间，请看下面
-## 找到项目里面的_init_.py文件，找到下面
-## def get_time_unix():
-##     return int((datetime.datetime.now() + datetime.timedelta(hours=8)).timestamp())
-## 改成
-##  return int((datetime.datetime.now() + datetime.timedelta(hours=8)).timestamp())
-## 或者
-##  return int((datetime.datetime.utcnow() + datetime.timedelta(hours=8)).timestamp())
-## 请自行测试那一条适用，导致这个原因是docker环境或者主机环境时区问题影响,每个设备不能同时照顾
+## SCAN_INTERVAL
+interval HA logs the data, default 10 min (600 seconds)
 
-
+## Time Error
+inside `_init_.py`, change `def get_time_unix():` from
+```
+return int((datetime.datetime.now() + datetime.timedelta(hours=8)).timestamp())
+```
+to 
+```
+return int((datetime.datetime.utcnow() + datetime.timedelta(hours=8)).timestamp())
+```

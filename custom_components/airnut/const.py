@@ -4,6 +4,7 @@ DOMAIN = "airnut"
 VERSION = "1.0.1"
 ISSUE_URL = "https://github.com/billhu1996/Airnut/issues"
 ISSUE_URL2 = "https://github.com/zllikey/AirnutFun/issues"
+ISSUE_URL3 = "https://github.com/lin-ycv/AirnutFun/issues"
 ATTRIBUTION = ""
 
 # Configuration

@@ -35,11 +35,11 @@ CONF_NIGHT_END_HOUR = "night_end_hour"
 CONF_IS_NIGHT_UPDATE = "is_night_update"
 HOST_IP = "0.0.0.0"
 CONF_WEATHE_CODE = "weathe_code"
-SCAN_INTERVAL = datetime.timedelta(seconds=120)
+SCAN_INTERVAL = datetime.timedelta(seconds=600)
 ZERO_TIME = datetime.datetime.fromtimestamp(0)
 weathestate= 0
 weathe_status = ""
-weathe_code = 101010100
+weathe_code = 101340101
 
 
 CONFIG_SCHEMA = vol.Schema(
@@ -50,7 +50,7 @@ CONFIG_SCHEMA = vol.Schema(
                 vol.Optional(CONF_NIGHT_END_HOUR, default=ZERO_TIME): cv.datetime,
                 vol.Optional(CONF_IS_NIGHT_UPDATE, default=True): cv.boolean,
                 vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL): cv.time_period,
-                vol.Optional(CONF_WEATHE_CODE, default="101010100"): cv.string,
+                vol.Optional(CONF_WEATHE_CODE, default="101340101"): cv.string,
             }
         )
     },
